@@ -1,0 +1,38 @@
+﻿# Configuración de modelos
+models:
+  cheap: "gpt-3.5-turbo"
+  moderate: "gpt-4o-mini"
+  expensive: "gpt-4o"
+
+# Umbrales de decisión para cost optimization
+cost_optimization:
+  simple_task_max_tokens: 500
+  complex_task_min_tokens: 1000
+  enable: true
+
+# Configuración de agentes
+agents:
+  investigator:
+    max_subtopics: 6
+    min_subtopics: 3
+    default_model: "cheap"
+  
+  curator:
+    analysis_depth: "deep"
+    default_model: "moderate"
+  
+  reporter:
+    format: "markdown"
+    always_use_model: "expensive"
+    min_words: 500
+
+# Output
+output:
+  save_intermediate: true
+  reports_dir: "./reports"
+  log_level: "INFO"
+
+# Web Search (para después implementar real API)
+web_search:
+  use_mock: true
+  max_results: 10
