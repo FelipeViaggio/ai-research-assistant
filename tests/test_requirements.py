@@ -6,6 +6,7 @@ from src.graph.workflow import ResearchWorkflow
 from src.agents.investigator import InvestigatorAgent
 from src.agents.curator import CuratorAgent
 from src.agents.reporter import ReporterAgent
+from src.agents.supervisor import SupervisorAgent
 from src.core.llm_client import LLMClient
 from src.core.cost_optimizer import CostOptimizer
 from src.models.enums import TaskComplexity
@@ -17,16 +18,20 @@ class TestMultiAgentArchitecture:
         '''REQUIREMENT: Multi-agent system con 4 agentes'''
         workflow = ResearchWorkflow()
         
-        # Verificar que todos los agentes existen
-        assert hasattr(workflow, 'investigator'), 'Falta Investigator Agent'
-        assert hasattr(workflow, 'curator'), 'Falta Curator Agent'
-        assert hasattr(workflow, 'reporter'), 'Falta Reporter Agent'
-        assert hasattr(workflow, 'parser'), 'Falta Parser (parte del Supervisor)'
+        # Verificar que el Supervisor existe
+        assert hasattr(workflow, 'supervisor'), 'Falta Supervisor Agent'
+        assert isinstance(workflow.supervisor, SupervisorAgent)
+        
+        # Verificar que los agentes están dentro del Supervisor
+        assert hasattr(workflow.supervisor, 'investigator'), 'Falta Investigator Agent'
+        assert hasattr(workflow.supervisor, 'curator'), 'Falta Curator Agent'
+        assert hasattr(workflow.supervisor, 'reporter'), 'Falta Reporter Agent'
+        assert hasattr(workflow.supervisor, 'parser'), 'Falta Parser (parte del Supervisor)'
         
         # Verificar tipos correctos
-        assert isinstance(workflow.investigator, InvestigatorAgent)
-        assert isinstance(workflow.curator, CuratorAgent)
-        assert isinstance(workflow.reporter, ReporterAgent)
+        assert isinstance(workflow.supervisor.investigator, InvestigatorAgent)
+        assert isinstance(workflow.supervisor.curator, CuratorAgent)
+        assert isinstance(workflow.supervisor.reporter, ReporterAgent)
     
     def test_graph_has_correct_nodes(self):
         '''REQUIREMENT: Workflow orquestado por Supervisor'''
@@ -43,9 +48,10 @@ class TestMultiAgentArchitecture:
         workflow = ResearchWorkflow()
         
         # Todos deben usar el mismo cost_optimizer para tracking correcto
-        assert workflow.investigator.cost_optimizer is workflow.cost_optimizer
-        assert workflow.curator.cost_optimizer is workflow.cost_optimizer
-        assert workflow.reporter.cost_optimizer is workflow.cost_optimizer
+        supervisor = workflow.supervisor
+        assert supervisor.investigator.cost_optimizer is supervisor.cost_optimizer
+        assert supervisor.curator.cost_optimizer is supervisor.cost_optimizer
+        assert supervisor.reporter.cost_optimizer is supervisor.cost_optimizer
 
 class TestCostOptimization:
     '''Valida que la optimización de costos funcione correctamente'''

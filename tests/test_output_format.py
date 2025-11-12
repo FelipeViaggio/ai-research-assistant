@@ -24,7 +24,8 @@ class TestOutputFormat:
             )
         ]
         
-        report, file_path = workflow.reporter.generate_report('Test', curated)
+        # Acceder al reporter a través del supervisor
+        report, file_path = workflow.supervisor.reporter.generate_report('Test', curated)
         
         # Validar Markdown
         assert report.startswith('#'), 'Debe empezar con header Markdown (#)'
@@ -60,7 +61,8 @@ class TestOutputFormat:
             )
         ]
         
-        report, file_path = workflow.reporter.generate_report('Test Topic', curated)
+        # Acceder al reporter a través del supervisor
+        report, file_path = workflow.supervisor.reporter.generate_report('Test Topic', curated)
         
         word_count = len(report.split())
         assert word_count >= 200, f'Reporte muy corto: {word_count} palabras (min 200 para test)'
@@ -83,7 +85,8 @@ class TestOutputFormat:
             )
         ]
         
-        report, file_path = workflow.reporter.generate_report('Test', curated)
+        # Acceder al reporter a través del supervisor
+        report, file_path = workflow.supervisor.reporter.generate_report('Test', curated)
         
         # Verificar que el archivo existe
         assert os.path.exists(file_path), f'Archivo no creado: {file_path}'
